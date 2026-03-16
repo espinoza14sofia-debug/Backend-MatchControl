@@ -10,14 +10,12 @@ export class MatchSetController {
 
     constructor(private readonly msService: MatchSetService) { }
 
-    // Crear un set dentro de un partido
     @Post()
     @Roles('Admin', 'Arbitro')
     crear(@Body() dto: any) {
         return this.msService.crear(dto);
     }
 
-    // Ver todos los sets de un partido
     @Get('match/:id')
     @Roles('Admin', 'Organizador', 'Arbitro', 'Participante')
     verPorMatch(
@@ -26,7 +24,6 @@ export class MatchSetController {
         return this.msService.verPorMatch(id);
     }
 
-    // Actualizar datos de un set específico
     @Patch(':idMatch/:numSet')
     @Roles('Admin', 'Arbitro')
     actualizar(
@@ -37,7 +34,6 @@ export class MatchSetController {
         return this.msService.actualizar(idMatch, numSet, dto);
     }
 
-    // Eliminar un set de un partido
     @Delete(':idMatch/:numSet')
     @Roles('Admin')
     eliminar(

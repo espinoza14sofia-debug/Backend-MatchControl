@@ -27,7 +27,7 @@ const iniciales = n => n ? n.split(' ').map(w => w[0]).join('').slice(0, 2).toUp
 
 const Sidebar = ({ activo, setActivo, usuario, onLogout, notifCount }) => {
     const items = [
-        { id: 'dashboard',      label: 'Dashboard' },
+        { id: 'dashboard',      label: 'Inicio' },
         { id: 'torneos',        label: 'Torneos disponibles' },
         { id: 'misequipos',     label: 'Mi equipo' },
         { id: 'notificaciones', label: 'Notificaciones' },

@@ -2,17 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
-// Servicio que maneja la lógica de los sets dentro de un partido
+
 @Injectable()
 export class MatchSetService {
-
-    // Se inyecta correctamente la conexión a la base de datos
     constructor(
         @InjectDataSource()
         private dataSource: DataSource
     ) { }
 
-    // Crear un nuevo set en un partido
     async crear(dto: any) {
 
         const query = `
@@ -31,7 +28,6 @@ export class MatchSetService {
         ]);
     }
 
-    // Obtener todos los sets de un partido
     async verPorMatch(idMatch: number) {
 
         const query = `
@@ -44,7 +40,6 @@ export class MatchSetService {
         return await this.dataSource.query(query, [idMatch]);
     }
 
-    // Actualizar datos de un set específico
     async actualizar(idMatch: number, numSet: number, dto: any) {
 
         const query = `
@@ -68,7 +63,6 @@ export class MatchSetService {
         ]);
     }
 
-    // Eliminar un set de un partido
     async eliminar(idMatch: number, numSet: number) {
 
         const query = `

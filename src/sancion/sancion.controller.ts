@@ -1,52 +1,45 @@
-// Importa los decoradores y funciones de NestJS
 import { Controller, Get, Post, Body, Param, Delete, Patch, ParseIntPipe, UseGuards } from '@nestjs/common';
-// Importa el servicio de sanción
 import { SancionService } from './sancion.service';
-// Importa el guard que controla los roles
-import { RolesGuard } from '../auth/roles.guard';  
-// Importa el decorador Roles para asignar permisos
-import { Roles } from '../auth/roles.decorator';  
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
-// Define el controlador para la ruta "sanciones"
 @Controller('sanciones')
-@UseGuards(RolesGuard) // aplica el guard de roles a todo el controlador
+@UseGuards(RolesGuard)
 export class SancionController {
-    
-    // Constructor que inyecta el servicio de sanción
+
+
     constructor(private readonly service: SancionService) { }
 
-    // Endpoint GET para obtener todas las sanciones
     @Get()
-    @Roles('Admin', 'Organizador', 'Arbitro') // solo estos roles pueden acceder
+    @Roles('Admin', 'Organizador', 'Arbitro')
     async findAll() {
-        return await this.service.obtenerTodas(); // llama al servicio para listar sanciones
+        return await this.service.obtenerTodas();
     }
 
-    // Endpoint GET para obtener sanciones de un torneo específico
+
     @Get('torneo/:id')
-    @Roles('Admin', 'Organizador', 'Arbitro', 'Participante') // roles permitidos
+    @Roles('Admin', 'Organizador', 'Arbitro', 'Participante')
     async findByTorneo(@Param('id', ParseIntPipe) id: number) {
-        return await this.service.obtenerPorTorneo(id); // llama al servicio con el ID del torneo
+        return await this.service.obtenerPorTorneo(id);
     }
 
-    // Endpoint POST para crear una nueva sanción
+
     @Post()
-    @Roles('Admin', 'Organizador') // solo Admin y Organizador pueden crear
+    @Roles('Admin', 'Organizador')
     async create(@Body() data: any) {
-        return await this.service.crear(data); // llama al servicio para crear
+        return await this.service.crear(data);
     }
 
-    // Endpoint PATCH para actualizar una sanción por ID
+
     @Patch(':id')
-    @Roles('Admin', 'Organizador') // solo Admin y Organizador pueden actualizar
     async update(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
-        return await this.service.actualizar(id, data); // llama al servicio para actualizar
+        return await this.service.actualizar(id, data);
     }
 
-    // Endpoint DELETE para eliminar una sanción por ID
+
     @Delete(':id')
-    @Roles('Admin') // solo Admin puede eliminar
+    @Roles('Admin')
     async remove(@Param('id', ParseIntPipe) id: number) {
-        return await this.service.eliminar(id); // llama al servicio para borrar
+        return await this.service.eliminar(id);
     }
 }

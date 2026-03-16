@@ -10,7 +10,7 @@ export class TorneoService {
         private dataSource: DataSource
     ) { }
 
-    // Crear torneo usando SP
+
     async crear(dto: any) {
 
         const sql = `
@@ -39,7 +39,7 @@ export class TorneoService {
         return await this.dataSource.query(sql, values);
     }
 
-    // Obtener todos los torneos
+
     async findAll() {
 
         const sql = `
@@ -51,7 +51,7 @@ export class TorneoService {
         return await this.dataSource.query(sql);
     }
 
-    // Obtener torneo por ID
+
     async findOne(id: number) {
 
         const sql = `
@@ -65,7 +65,7 @@ export class TorneoService {
         return res.length > 0 ? res[0] : null;
     }
 
-    // Cambiar estado del torneo
+
     async cambiarEstado(id: number, estado: string) {
 
         const sql = `
@@ -82,7 +82,6 @@ export class TorneoService {
         };
     }
 
-    // Eliminar torneo usando SP
     async eliminar(id: number) {
 
         const sql = `

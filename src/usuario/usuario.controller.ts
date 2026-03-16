@@ -18,19 +18,19 @@ export class UsuariosController {
     @Post()
     async registrar(@Body() body: RegisterDto) {
 
-        // Verifica que el nickname no exista
+
         const existeNick = await this.usuariosService.buscarPorNickname(body.nickname);
         if (existeNick) {
             throw new ConflictException('El nickname ya está en uso');
         }
 
-        // Verifica que el email no exista
+
         const existeEmail = await this.usuariosService.buscarPorEmail(body.email);
         if (existeEmail) {
             throw new ConflictException('El correo ya está registrado');
         }
 
-        // Hashea la contraseña antes de guardar
+
         const hash = await bcrypt.hash(body.passwordHash, 10);
 
         const nuevo = await this.usuariosService.crear({

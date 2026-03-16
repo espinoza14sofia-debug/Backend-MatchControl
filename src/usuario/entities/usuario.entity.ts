@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 't
 import { Rol } from '../../rol/entities/rol.entity';
 
 
-@Entity('Usuario')  // nombre exacto de tu tabla SQL
+@Entity('Usuario')
 export class Usuario {
 
   @PrimaryGeneratedColumn({ name: 'Id_Usuario' })
@@ -11,8 +11,8 @@ export class Usuario {
   @Column({ name: 'Id_Rol' })
   idRol: number;
 
-@Column({ name: 'Id_Organizacion', type: 'int', nullable: true })
-idOrganizacion: number;
+  @Column({ name: 'Id_Organizacion', type: 'int', nullable: true })
+  idOrganizacion: number;
 
   @Column({ name: 'Nombre_Completo' })
   nombreCompleto: string;
@@ -26,13 +26,13 @@ idOrganizacion: number;
   @Column({ name: 'Password_Hash' })
   passwordHash: string;
 
-@Column({ name: 'Estado', type: 'bit', default: 1 })
-estado: boolean;
+  @Column({ name: 'Estado', type: 'bit', default: 1 })
+  estado: boolean;
 
   @Column({ name: 'Fecha_Registro', type: 'datetime', default: () => 'GETDATE()' })
   fechaRegistro: Date;
 
-  // Relación con tabla Rol
+
   @ManyToOne(() => Rol)
   @JoinColumn({ name: 'Id_Rol' })
   rol: Rol;

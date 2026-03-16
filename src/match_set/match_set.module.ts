@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MatchSetService } from './match_set.service';
 import { MatchSetController } from './match_set.controller';
 
-// Módulo que agrupa todo lo relacionado con los sets de los partidos
 @Module({
   imports: [
     TypeOrmModule.forFeature([])
@@ -11,4 +10,4 @@ import { MatchSetController } from './match_set.controller';
   providers: [MatchSetService],
   controllers: [MatchSetController]
 })
-export class MatchSetModule {}
+export class MatchSetModule { }

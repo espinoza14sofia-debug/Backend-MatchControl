@@ -35,7 +35,7 @@ const Badge = ({ estado }) => {
 
 const Sidebar = ({ activo, setActivo, usuario, onLogout }) => {
     const items = [
-        { id: 'dashboard',      label: 'Dashboard',          icon: 'M3 3h7v7H3zM13 3h7v7h-7zM3 13h7v7H3zM13 13h7v7h-7z' },
+        { id: 'dashboard',      label: 'Inicio',          icon: 'M3 3h7v7H3zM13 3h7v7h-7zM3 13h7v7H3zM13 13h7v7h-7z' },
         { id: 'usuarios',       label: 'Usuarios',           icon: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z' },
         { id: 'solicitudes',    label: 'Solicitudes de Rol', icon: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11' },
         { id: 'organizaciones', label: 'Organizaciones',     icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' },

@@ -10,14 +10,12 @@ export class NotificacionService {
         private readonly repo: Repository<Notificacion>,
     ) { }
 
-    // Devuelve todas las notificaciones, ordenadas por fecha descendente
     async obtenerTodas() {
         return await this.repo.find({
             order: { Fecha_Envio: 'DESC' }
         });
     }
 
-    // Devuelve todas las notificaciones de un usuario específico
     async obtenerPorUsuario(idUsuario: number) {
         return await this.repo.find({
             where: { Id_Usuario: idUsuario },
@@ -25,19 +23,16 @@ export class NotificacionService {
         });
     }
 
-    // Crea una nueva notificación
     async crear(data: any) {
         const nueva = this.repo.create(data);
         return await this.repo.save(nueva);
     }
 
-    // Marca una notificación como leída
     async marcarLeida(id: number) {
         await this.repo.update(id, { Leido: true });
         return { mensaje: 'Notificación leída' };
     }
 
-    // Elimina una notificación
     async eliminar(id: number) {
         const resultado = await this.repo.delete(id);
         if (resultado.affected === 0) {

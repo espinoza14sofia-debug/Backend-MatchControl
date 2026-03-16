@@ -1,36 +1,31 @@
-// Importa los decoradores y funciones de NestJS
 import { Controller, Get, Post, Body, Param, Delete, UseGuards, SetMetadata } from '@nestjs/common';
-// Importa el servicio de organización
 import { OrganizacionService } from './organizacion.service';
-// Importa el guard que controla los roles
 import { RolesGuard } from '../auth/roles.guard';
 
-// Define el controlador para la ruta "organizacion"
 @Controller('organizacion')
-@UseGuards(RolesGuard) // aplica el guard de roles a todo el controlador
+@UseGuards(RolesGuard)
 export class OrganizacionController {
-  
-  // Constructor que inyecta el servicio de organización
+
+
   constructor(private readonly organizacionService: OrganizacionService) { }
 
-  // Endpoint POST para crear una organización
   @Post()
-  @SetMetadata('roles', ['Admin']) // solo rol Admin puede usarlo
+  @SetMetadata('roles', ['Admin'])
   create(@Body() dto: any) {
-    return this.organizacionService.create(dto); // llama al servicio para crear
+    return this.organizacionService.create(dto);
   }
 
-  // Endpoint GET para obtener todas las organizaciones
+
   @Get()
-  @SetMetadata('roles', ['Admin', 'Organizador']) // roles permitidos: Admin y Organizador
+  @SetMetadata('roles', ['Admin', 'Organizador'])
   findAll() {
-    return this.organizacionService.findAll(); // llama al servicio para listar
+    return this.organizacionService.findAll();
   }
 
-  // Endpoint DELETE para eliminar una organización por ID
+
   @Delete(':id')
-  @SetMetadata('roles', ['Admin']) // solo rol Admin puede eliminar
+  @SetMetadata('roles', ['Admin'])
   remove(@Param('id') id: string) {
-    return this.organizacionService.remove(+id); // llama al servicio para borrar
+    return this.organizacionService.remove(+id);
   }
 }

@@ -2,14 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
-// Servicio que maneja la lógica de los participantes dentro de un partido
 @Injectable()
 export class MatchParticipanteService {
-
-    // Se inyecta la conexión a la base de datos
     constructor(@InjectDataSource() private dataSource: DataSource) { }
 
-    // Asignar un participante a un partido
     async asignar(dto: any) {
 
         const sql = `
@@ -27,7 +23,6 @@ export class MatchParticipanteService {
         ]);
     }
 
-    // Obtener todos los participantes de un partido
     async findByMatch(idMatch: number) {
 
         const sql = `
@@ -40,7 +35,6 @@ export class MatchParticipanteService {
         return await this.dataSource.query(sql, [idMatch]);
     }
 
-    // Actualizar datos de un participante en un partido
     async actualizar(idMatch: number, idPart: number, dto: any) {
 
         const sql = `
@@ -62,7 +56,6 @@ export class MatchParticipanteService {
         ]);
     }
 
-    // Eliminar un participante de un partido
     async eliminar(idMatch: number, idPart: number) {
 
         const sql = `

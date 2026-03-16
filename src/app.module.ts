@@ -1,33 +1,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-// Auth
 import { AuthModule } from './auth/auth.module';
-
-// Catálogo y Usuarios
 import { RolModule } from './rol/rol.module';
 import { OrganizacionModule } from './organizacion/organizacion.module';
 import { UsuariosModule } from './usuario/usuario.module';
 import { CategoriaModule } from './categoria/categoria.module';
 import { DisciplinaModule } from './disciplina/disciplina.module';
 import { ConfiguracionSistemaModule } from './configuracion-sistema/configuracion_sistema.module';
-
-// Competencia (estructura de torneo)
 import { TorneoModule } from './torneo/torneo.module';
 import { FaseModule } from './fase/fase.module';
 import { GrupoModule } from './grupo/grupo.module';
-
-// Participación (equipos y jugadores)
 import { EquipoModule } from './equipo/equipo.module';
 import { EquipoJugadorModule } from './equipo_jugador/equipo_jugador.module';
 import { ParticipanteModule } from './participante/participante.module';
-
-// Ejecución (partidos y resultados)
 import { MatchModule } from './match/match.module';
 import { MatchParticipanteModule } from './match_participante/match_participante.module';
 import { MatchSetModule } from './match_set/match_set.module';
-
-// Gestión, Seguridad y Seguimiento
 import { PosicionesModule } from './posiciones/posiciones.module';
 import { AuditoriaModule } from './auditoria/auditoria.module';
 import { SancionModule } from './sancion/sancion.module';

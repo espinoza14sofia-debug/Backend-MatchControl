@@ -2,14 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
-// Servicio que maneja la lógica de los partidos
 @Injectable()
 export class MatchService {
-
-    // Se inyecta la conexión a la base de datos
     constructor(@InjectDataSource() private dataSource: DataSource) { }
-
-    // Crear un nuevo partido
     async crear(dto: any) {
 
         const sql = `INSERT INTO Match (Id_Fase, Id_Grupo, Id_Arbitro, Fecha_Hora, Ubicacion, Estado) 
@@ -26,12 +21,11 @@ export class MatchService {
         ]);
     }
 
-    // Obtener todos los partidos
     async findAll() {
         return await this.dataSource.query('SELECT * FROM Match');
     }
 
-    // Obtener partidos de una fase específica
+
     async findByFase(idFase: number) {
         return await this.dataSource.query(
             'SELECT * FROM Match WHERE Id_Fase = @0',
@@ -39,7 +33,7 @@ export class MatchService {
         );
     }
 
-    // Obtener un partido por su id
+
     async findOne(id: number) {
         const res = await this.dataSource.query(
             'SELECT * FROM Match WHERE Id_Match = @0',
@@ -48,7 +42,7 @@ export class MatchService {
         return res[0];
     }
 
-    // Actualizar información de un partido
+
     async actualizar(id: number, dto: any) {
 
         const params = [
@@ -78,22 +72,19 @@ export class MatchService {
         return await this.dataSource.query(sql, params);
     }
 
-    // Eliminar un partido
+
     async eliminar(id: number) {
 
-        // Primero se eliminan los sets del partido
         await this.dataSource.query(
             'DELETE FROM Match_Set WHERE Id_Match = @0',
             [id]
         );
 
-        // Luego los participantes del partido
         await this.dataSource.query(
             'DELETE FROM Match_Participante WHERE Id_Match = @0',
             [id]
         );
 
-        // Finalmente el partido
         return await this.dataSource.query(
             'DELETE FROM Match WHERE Id_Match = @0',
             [id]
