@@ -1,43 +1,48 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Notificacion } from './entities/notificacion.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class NotificacionService {
     constructor(
-        @InjectRepository(Notificacion)
-        private readonly repo: Repository<Notificacion>,
+        @InjectDataSource()
+        private readonly dataSource: DataSource,
     ) { }
 
     async obtenerTodas() {
-        return await this.repo.find({
-            order: { Fecha_Envio: 'DESC' }
-        });
+        return await this.dataSource.query(
+            'SELECT * FROM Notificacion ORDER BY Fecha_Envio DESC'
+        );
     }
 
     async obtenerPorUsuario(idUsuario: number) {
-        return await this.repo.find({
-            where: { Id_Usuario: idUsuario },
-            order: { Fecha_Envio: 'DESC' }
-        });
+        return await this.dataSource.query(
+            'SELECT * FROM Notificacion WHERE Id_Usuario = @0 ORDER BY Fecha_Envio DESC',
+            [idUsuario]
+        );
     }
 
-    async crear(data: any) {
-        const nueva = this.repo.create(data);
-        return await this.repo.save(nueva);
+    async crear(dto: any) {
+        return await this.dataSource.query(
+            'EXEC sp_InsertarNotificacion @IdUsuario=@0, @Titulo=@1, @Mensaje=@2, @Tipo=@3',
+            [dto.Id_Usuario, dto.Titulo, dto.Mensaje, dto.Tipo]
+        );
     }
 
     async marcarLeida(id: number) {
-        await this.repo.update(id, { Leido: true });
+        await this.dataSource.query(
+            'EXEC sp_MarcarNotificacionLeida @IdNotificacion=@0',
+            [id]
+        );
         return { mensaje: 'Notificación leída' };
     }
 
     async eliminar(id: number) {
-        const resultado = await this.repo.delete(id);
-        if (resultado.affected === 0) {
-            throw new NotFoundException('La notificación no existe');
-        }
+        const resultado = await this.dataSource.query(
+            'EXEC sp_EliminarNotificacion @IdNotificacion=@0',
+            [id]
+        );
+
         return { mensaje: `Notificación ${id} eliminada correctamente` };
     }
 }

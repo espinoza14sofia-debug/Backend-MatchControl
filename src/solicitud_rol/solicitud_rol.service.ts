@@ -1,59 +1,49 @@
-
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { SolicitudRol } from './entities/solicitud_rol.entity';
-import { Usuario } from '../usuario/entities/usuario.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
-export class SolicitudService {
+export class AuditoriaService {
+    constructor(@InjectDataSource() private readonly dataSource: DataSource) { }
 
-    constructor(
-        @InjectRepository(SolicitudRol)
-        private readonly solicitudRepo: Repository<SolicitudRol>,
-        @InjectRepository(Usuario)
-        private readonly usuarioRepo: Repository<Usuario>,
-    ) { }
+    async findAll() {
+        return await this.dataSource.query(
+            'SELECT * FROM Auditoria ORDER BY Fecha_Evento DESC'
+        );
+    }
+
+    async findByUsuario(idUsuario: number) {
+        return await this.dataSource.query(
+            'SELECT * FROM Auditoria WHERE Id_Usuario = @0 ORDER BY Fecha_Evento DESC',
+            [idUsuario]
+        );
+    }
+
+    async findByTabla(tabla: string) {
+        return await this.dataSource.query(
+            'SELECT * FROM Auditoria WHERE Tabla_Afectada = @0 ORDER BY Fecha_Evento DESC',
+            [tabla]
+        );
+    }
 
     async crear(dto: any) {
-        const nueva = this.solicitudRepo.create({
-            ...dto,
-            Estado: 'Pendiente'
-        });
-        return await this.solicitudRepo.save(nueva);
+        return await this.dataSource.query(
+            'EXEC sp_InsertarAuditoria @IdUsuario=@0, @Accion=@1, @TablaAfectada=@2, @IdRegistroAfectado=@3, @Detalles=@4',
+            [
+                dto.Id_Usuario,
+                dto.Accion,
+                dto.Tabla_Afectada,
+                dto.Id_Registro_Afectado,
+                dto.Detalles
+            ]
+        );
     }
 
-
-    async obtenerPendientes() {
-        return await this.solicitudRepo.find({
-            where: { Estado: 'Pendiente' },
-            relations: ['usuario']
-        });
-    }
-
-
-    async procesar(idSolicitud: number, nuevoEstado: 'Aprobado' | 'Rechazado', idOrganizacion?: number) {
-        const solicitud = await this.solicitudRepo.findOne({
-            where: { Id_Solicitud: idSolicitud }
-        });
-
-        if (!solicitud) throw new NotFoundException('La solicitud no existe');
-
-
-        solicitud.Estado = nuevoEstado;
-        await this.solicitudRepo.save(solicitud);
-        if (nuevoEstado === 'Aprobado') {
-            const cambiosUsuario: any = {
-                rol: { id: solicitud.Rol_Solicitado }
-            };
-
-            if (idOrganizacion) {
-                cambiosUsuario.organizacion = { id: idOrganizacion };
-            }
-
-            await this.usuarioRepo.update(solicitud.Id_Usuario, cambiosUsuario);
-        }
-
-        return { message: `Solicitud ${nuevoEstado} con éxito` };
+    async eliminar(id: number) {
+        await this.dataSource.query(
+            'DELETE FROM Auditoria WHERE Id_Auditoria = @0',
+            [id]
+        );
+        return { success: true, message: `Registro de auditoría ${id} eliminado` };
     }
 }

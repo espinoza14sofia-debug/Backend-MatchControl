@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
@@ -7,74 +7,51 @@ export class TorneoService {
 
     constructor(
         @InjectDataSource()
-        private dataSource: DataSource
+        private readonly dataSource: DataSource
     ) { }
 
-
     async crear(dto: any) {
-
         const sql = `
-        EXEC sp_InsertarTorneo
-        @IdDisciplina = @0,
-        @IdOrganizacion = @1,
-        @IdCreador = @2,
-        @Nombre = @3,
-        @Formato = @4,
-        @MaxParticipantes = @5,
-        @FechaInicio = @6,
+        EXEC sp_InsertarTorneo 
+        @IdDisciplina = @0, 
+        @IdOrganizacion = @1, 
+        @IdCreador = @2, 
+        @Nombre = @3, 
+        @Formato = @4, 
+        @MaxParticipantes = @5, 
+        @FechaInicio = @6, 
         @FechaFin = @7
         `;
 
         const values = [
-            Number(dto.Id_Disciplina),
-            Number(dto.Id_Organizacion),
-            Number(dto.Id_Creador),
-            String(dto.Nombre),
-            String(dto.Formato),
-            Number(dto.Max_Participantes),
-            dto.Fecha_Inicio ? new Date(dto.Fecha_Inicio) : null,
-            dto.Fecha_Fin ? new Date(dto.Fecha_Fin) : null
+            dto.Id_Disciplina,
+            dto.Id_Organizacion,
+            dto.Id_Creador,
+            dto.Nombre,
+            dto.Formato,
+            dto.Max_Participantes,
+            dto.Fecha_Inicio,
+            dto.Fecha_Fin
         ];
 
         return await this.dataSource.query(sql, values);
     }
 
-
     async findAll() {
-
-        const sql = `
-        SELECT *
-        FROM Torneo
-        ORDER BY Fecha_Creacion DESC
-        `;
-
-        return await this.dataSource.query(sql);
+        return await this.dataSource.query('SELECT * FROM Torneo ORDER BY Fecha_Creacion DESC');
     }
-
 
     async findOne(id: number) {
-
-        const sql = `
-        SELECT *
-        FROM Torneo
-        WHERE Id_Torneo = @0
-        `;
-
-        const res = await this.dataSource.query(sql, [id]);
-
-        return res.length > 0 ? res[0] : null;
+        const res = await this.dataSource.query('SELECT * FROM Torneo WHERE Id_Torneo = @0', [id]);
+        if (!res[0]) throw new NotFoundException(`Torneo ${id} no encontrado`);
+        return res[0];
     }
 
-
     async cambiarEstado(id: number, estado: string) {
-
-        const sql = `
-        UPDATE Torneo
-        SET Estado = @1
-        WHERE Id_Torneo = @0
-        `;
-
-        await this.dataSource.query(sql, [id, String(estado)]);
+        await this.dataSource.query(
+            'EXEC sp_ActualizarTorneoEstado @IdTorneo=@0, @Estado=@1',
+            [id, estado]
+        );
 
         return {
             success: true,
@@ -82,14 +59,16 @@ export class TorneoService {
         };
     }
 
+    async detalle(id: number) {
+        const res = await this.dataSource.query(
+            'EXEC sp_ConsultarTorneoDetalle @IdTorneo=@0',
+            [id]
+        );
+        return res[0];
+    }
+
     async eliminar(id: number) {
-
-        const sql = `
-        EXEC sp_EliminarTorneo
-        @IdTorneo = @0
-        `;
-
-        await this.dataSource.query(sql, [id]);
+        await this.dataSource.query('EXEC sp_EliminarTorneo @IdTorneo = @0', [id]);
 
         return {
             success: true,

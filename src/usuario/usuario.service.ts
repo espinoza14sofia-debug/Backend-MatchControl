@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
 
 @Injectable()
@@ -9,6 +9,7 @@ export class UsuariosService {
     constructor(
         @InjectRepository(Usuario)
         private usuarioRepo: Repository<Usuario>,
+        private dataSource: DataSource,
     ) { }
 
     async buscarPorNickname(nickname: string): Promise<Usuario | null> {
@@ -18,7 +19,6 @@ export class UsuariosService {
         });
     }
 
-
     async buscarPorEmail(email: string): Promise<Usuario | null> {
         return this.usuarioRepo.findOne({
             where: { email },
@@ -26,30 +26,31 @@ export class UsuariosService {
         });
     }
 
-
     async buscarPorId(id: number): Promise<Usuario | null> {
         return this.usuarioRepo.findOne({
-            where: { id },
+            where: { id: id } as any,
             relations: ['rol'],
         });
     }
 
+    async crear(datos: any) {
+        return await this.dataSource.query(
+            'EXEC sp_InsertarUsuario @IdRol=@0, @NombreCompleto=@1, @Nickname=@2, @Email=@3, @PasswordHash=@4',
+            [datos.idRol, datos.nombreCompleto, datos.nickname, datos.email, datos.passwordHash]
+        );
+    }
 
-    async crear(datos: {
-        nombreCompleto: string;
-        nickname: string;
-        email: string;
-        passwordHash: string;
-        idRol: number;
-    }): Promise<Usuario> {
-        const nuevo = this.usuarioRepo.create({
-            nombreCompleto: datos.nombreCompleto,
-            nickname: datos.nickname,
-            email: datos.email,
-            passwordHash: datos.passwordHash,
-            idRol: datos.idRol,
-            estado: true,
-        });
-        return this.usuarioRepo.save(nuevo);
+    async actualizar(id: number, dto: any) {
+        return await this.dataSource.query(
+            'EXEC sp_ActualizarUsuario @IdUsuario=@0, @NombreCompleto=@1, @Email=@2',
+            [id, dto.Nombre_Completo, dto.Email]
+        );
+    }
+
+    async eliminar(id: number) {
+        return await this.dataSource.query(
+            'EXEC sp_EliminarUsuario @IdUsuario=@0',
+            [id]
+        );
     }
 }
