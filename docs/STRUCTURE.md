@@ -1,11 +1,11 @@
 # Estructura del Proyecto — MatchControl
 
-PlayWise está dividido en dos partes principales: el backend desarrollado
+MatchControl está dividido en dos partes principales: el backend desarrollado
 con NestJS y el frontend desarrollado con React + Vite.
 
 ## Raíz del Proyecto
 ```
-PlayWise/
+MatchControl/
 ├── Backend-MatchControl/
 └── matchcontrol-front/
 ```
