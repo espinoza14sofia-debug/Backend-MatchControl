@@ -431,7 +431,7 @@ La tabla Auditoría es gestionada automáticamente por los triggers `trg_Auditor
 | Tipo                | Cantidad |
 |---------------------|----------|
 | Tablas              | 18       |
-| Stored Procedures   | 52       |
+| Stored Procedures   | 59       |
 | Funciones escalares | 5        |
 | Vistas              | 6        |
 | Triggers            | 7        |
