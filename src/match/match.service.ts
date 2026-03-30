@@ -7,7 +7,6 @@ export class MatchService {
     constructor(@InjectDataSource() private readonly dataSource: DataSource) { }
 
     async crear(dto: any) {
-
         return await this.dataSource.query(
             'EXEC sp_InsertarMatch @IdFase=@0, @IdGrupo=@1, @IdArbitro=@2, @FechaHora=@3, @Ubicacion=@4',
             [
@@ -20,10 +19,33 @@ export class MatchService {
         );
     }
 
+    // ESTE ES EL MÉTODO QUE TE PIDE EL CONTROLLER PARA QUITAR EL ERROR
+    async actualizar(id: number, dto: any) {
+        // Primero verificamos que exista
+        await this.findOne(id);
+
+        // Usamos la lógica de actualización de metadatos (o puedes llamar a un SP si prefieres)
+        const sql = `
+            UPDATE [Match] 
+            SET Id_Arbitro = ISNULL(@1, Id_Arbitro),
+                Fecha_Hora = ISNULL(@2, Fecha_Hora),
+                Ubicacion = ISNULL(@3, Ubicacion),
+                Estado = ISNULL(@4, Estado)
+            WHERE Id_Match = @0
+        `;
+        return await this.dataSource.query(sql, [
+            id,
+            dto.Id_Arbitro ?? null,
+            dto.Fecha_Hora ?? null,
+            dto.Ubicacion ?? null,
+            dto.Estado ?? null
+        ]);
+    }
+
     async findAll() {
         return await this.dataSource.query(`
             SELECT m.*, f.Nombre as Nombre_Fase, g.Nombre as Nombre_Grupo 
-            FROM Match m
+            FROM [Match] m
             LEFT JOIN Fase f ON m.Id_Fase = f.Id_Fase
             LEFT JOIN Grupo g ON m.Id_Grupo = g.Id_Grupo
             ORDER BY m.Fecha_Hora DESC
@@ -32,7 +54,7 @@ export class MatchService {
 
     async findOne(id: number) {
         const res = await this.dataSource.query(
-            'SELECT * FROM Match WHERE Id_Match = @0',
+            'SELECT * FROM [Match] WHERE Id_Match = @0',
             [id]
         );
         if (!res[0]) throw new NotFoundException(`Match ${id} no encontrado`);
@@ -41,7 +63,7 @@ export class MatchService {
 
     async findByFase(idFase: number) {
         return await this.dataSource.query(
-            'SELECT * FROM Match WHERE Id_Fase = @0 ORDER BY Fecha_Hora ASC',
+            'SELECT * FROM [Match] WHERE Id_Fase = @0 ORDER BY Fecha_Hora ASC',
             [idFase]
         );
     }
@@ -51,17 +73,6 @@ export class MatchService {
             'EXEC sp_ActualizarResultadoMatch @IdMatch=@0, @Estado=@1, @IdGanador=@2',
             [id, dto.Estado, dto.Id_Ganador ?? null]
         );
-    }
-
-    async actualizarMetadata(id: number, dto: any) {
-        const sql = `
-            UPDATE Match 
-            SET Id_Arbitro = ISNULL(@1, Id_Arbitro),
-                Fecha_Hora = ISNULL(@2, Fecha_Hora),
-                Ubicacion = ISNULL(@3, Ubicacion)
-            WHERE Id_Match = @0
-        `;
-        return await this.dataSource.query(sql, [id, dto.Id_Arbitro, dto.Fecha_Hora, dto.Ubicacion]);
     }
 
     async eliminar(id: number) {

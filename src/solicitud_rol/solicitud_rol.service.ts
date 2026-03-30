@@ -3,47 +3,48 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 @Injectable()
-export class AuditoriaService {
-    constructor(@InjectDataSource() private readonly dataSource: DataSource) { }
+export class SolicitudService {
 
-    async findAll() {
-        return await this.dataSource.query(
-            'SELECT * FROM Auditoria ORDER BY Fecha_Evento DESC'
-        );
-    }
-
-    async findByUsuario(idUsuario: number) {
-        return await this.dataSource.query(
-            'SELECT * FROM Auditoria WHERE Id_Usuario = @0 ORDER BY Fecha_Evento DESC',
-            [idUsuario]
-        );
-    }
-
-    async findByTabla(tabla: string) {
-        return await this.dataSource.query(
-            'SELECT * FROM Auditoria WHERE Tabla_Afectada = @0 ORDER BY Fecha_Evento DESC',
-            [tabla]
-        );
-    }
+    constructor(
+        @InjectDataSource()
+        private readonly dataSource: DataSource,
+    ) { }
 
     async crear(dto: any) {
         return await this.dataSource.query(
-            'EXEC sp_InsertarAuditoria @IdUsuario=@0, @Accion=@1, @TablaAfectada=@2, @IdRegistroAfectado=@3, @Detalles=@4',
+            'EXEC sp_InsertarSolicitudRol @IdUsuario=@0, @RolSolicitado=@1, @Motivo=@2',
             [
                 dto.Id_Usuario,
-                dto.Accion,
-                dto.Tabla_Afectada,
-                dto.Id_Registro_Afectado,
-                dto.Detalles
+                dto.Rol_Solicitado,
+                dto.Motivo
             ]
         );
     }
 
-    async eliminar(id: number) {
-        await this.dataSource.query(
-            'DELETE FROM Auditoria WHERE Id_Auditoria = @0',
-            [id]
+    async obtenerPendientes() {
+        return await this.dataSource.query(
+            `SELECT s.*, u.Nombre_Completo, u.Email, r.Nombre_Rol 
+             FROM Solicitud_Rol s
+             JOIN Usuario u ON s.Id_Usuario = u.Id_Usuario
+             JOIN Rol r ON s.Rol_Solicitado = r.Id_Rol
+             WHERE s.Estado = 'Pendiente'`
         );
-        return { success: true, message: `Registro de auditoría ${id} eliminado` };
+    }
+
+    async procesar(idSolicitud: number, nuevoEstado: 'Aprobado' | 'Rechazado', idOrganizacion?: number) {
+        try {
+            await this.dataSource.query(
+                'EXEC sp_ProcesarSolicitudRol @IdSolicitud=@0, @NuevoEstado=@1, @IdOrganizacion=@2',
+                [
+                    idSolicitud,
+                    nuevoEstado,
+                    idOrganizacion ?? null
+                ]
+            );
+
+            return { message: `Solicitud ${nuevoEstado} con éxito` };
+        } catch (error) {
+            throw new NotFoundException(error.message || 'Error al procesar la solicitud');
+        }
     }
 }
