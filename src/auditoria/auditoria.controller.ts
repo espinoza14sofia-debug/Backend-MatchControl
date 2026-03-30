@@ -1,14 +1,11 @@
 import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { AuditoriaService } from './auditoria.service';
 import { RolesGuard } from '../auth/roles.guard';
+import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../auth/roles.decorator';
 
-
 @Controller('auditoria')
-@UseGuards(RolesGuard)
-@Roles('Admin')
 export class AuditoriaController {
-
 
     constructor(private readonly service: AuditoriaService) { }
 

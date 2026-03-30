@@ -20,7 +20,7 @@ export class EquipoJugadorService {
     }
   }
 
-  // ESTE ES EL MÉTODO QUE FALTABA PARA QUITAR EL ERROR
+
   async actualizar(idEq: number, idUs: number, nuevoIdEq: number) {
     try {
       const sql = `
@@ -30,8 +30,6 @@ export class EquipoJugadorService {
       `;
 
       const resultado = await this.dataSource.query(sql, [idEq, idUs, nuevoIdEq]);
-
-      // Si no afectó ninguna fila, es porque la relación no existía
       if (resultado[1] === 0) {
         throw new NotFoundException('No se encontró la relación Jugador-Equipo para actualizar');
       }
