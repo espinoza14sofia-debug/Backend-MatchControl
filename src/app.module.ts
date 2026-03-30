@@ -28,7 +28,7 @@ import { SolicitudRolModule } from './solicitud_rol/solicitud_rol.module';
       type: 'mssql',
       host: 'localhost',
       port: 1433,
-      username: 'jendry',
+      username: 'sofi_admin',
       password: '1234',
       database: 'MatchControl',
       autoLoadEntities: true,
