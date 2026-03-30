@@ -14,10 +14,10 @@ La tabla `Posiciones` y la tabla `Auditoria` son gestionadas automaticamente por
 
 ## Instrucciones
 
-### Clonar el repositorio
+###  repositorio
 
 ```bash
-gh repo clone espinoza14sofia-debug/Backend-MatchControl
+https://github.com/espinoza14sofia-debug/Backend-MatchControl.git
 ```
 
 ### Instalar dependencias
