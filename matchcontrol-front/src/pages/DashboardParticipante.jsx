@@ -11,14 +11,15 @@ const getHeaders = () => ({
 
 const Badge = ({ estado }) => {
     const map = {
-        'Borrador':      'bg-[#E8E4E1] text-[#5F2119]',
+        'Borrador': 'bg-[#E8E4E1] text-[#5F2119]',
         'Inscripciones': 'bg-[#D7C1A8]/40 text-[#7C2220]',
-        'En Curso':      'bg-[#7C2220] text-[#F4F1EE]',
-        'Finalizado':    'bg-[#E8E4E1] text-[#A28C75]',
-        'Cancelado':     'bg-[#5F2119]/10 text-[#5F2119]',
-        'Pendiente':     'bg-[#D7C1A8]/50 text-[#7C2220]',
-        'Aceptado':      'bg-[#7C2220]/10 text-[#7C2220]',
-        'Rechazado':     'bg-[#5F2119]/10 text-[#5F2119]',
+        'En Curso': 'bg-[#7C2220] text-[#F4F1EE]',
+        'Finalizado': 'bg-[#E8E4E1] text-[#A28C75]',
+        'Cancelado': 'bg-[#5F2119]/10 text-[#5F2119]',
+        'Pendiente': 'bg-[#D7C1A8]/50 text-[#7C2220]',
+        'Aceptado': 'bg-[#7C2220]/10 text-[#7C2220]',
+        'Rechazado': 'bg-[#5F2119]/10 text-[#5F2119]',
+        'Capitán': 'bg-[#5F2119] text-[#F4F1EE]',
     };
     return <span className={`inline-block text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ${map[estado] || 'bg-[#E8E4E1] text-[#A28C75]'}`}>{estado}</span>;
 };
@@ -27,11 +28,11 @@ const iniciales = n => n ? n.split(' ').map(w => w[0]).join('').slice(0, 2).toUp
 
 const Sidebar = ({ activo, setActivo, usuario, onLogout, notifCount }) => {
     const items = [
-        { id: 'dashboard',      label: 'Inicio' },
-        { id: 'torneos',        label: 'Torneos disponibles' },
-        { id: 'misequipos',     label: 'Mi equipo' },
+        { id: 'dashboard', label: 'Inicio' },
+        { id: 'torneos', label: 'Torneos disponibles' },
+        { id: 'misequipos', label: 'Mi equipo' },
         { id: 'notificaciones', label: 'Notificaciones' },
-        { id: 'solicitud',      label: 'Solicitar rol' },
+        { id: 'solicitud', label: 'Solicitar rol' },
     ];
     return (
         <aside className="w-56 bg-[#5F2119] flex flex-col min-h-screen shrink-0">
@@ -61,7 +62,7 @@ const Sidebar = ({ activo, setActivo, usuario, onLogout, notifCount }) => {
                 ))}
             </nav>
             <button onClick={onLogout} className="flex items-center gap-3 mx-3 mb-4 px-4 py-3 rounded-xl text-sm text-[#D7C1A8]/40 hover:bg-[#7C2220]/30 hover:text-[#D7C1A8] transition-all">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
                 Cerrar sesión
             </button>
         </aside>
@@ -69,15 +70,15 @@ const Sidebar = ({ activo, setActivo, usuario, onLogout, notifCount }) => {
 };
 
 const VistaDashboard = ({ setActivo, notifCount }) => {
-    const [torneos,  setTorneos]  = useState([]);
+    const [torneos, setTorneos] = useState([]);
     const [misInscr, setMisInscr] = useState([]);
     const usuario = getUser();
 
     useEffect(() => {
-        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
         if (usuario?.id) {
             fetch(`${API}/participantes`, { headers: getHeaders() }).then(r => r.json())
-                .then(d => { const l = Array.isArray(d) ? d : d?.data || []; setMisInscr(l.filter(p => p.Id_Usuario === usuario.id)); }).catch(() => {});
+                .then(d => { const l = Array.isArray(d) ? d : d?.data || []; setMisInscr(l.filter(p => p.Id_Usuario === usuario.id)); }).catch(() => { });
         }
     }, []);
 
@@ -141,7 +142,7 @@ const VistaTorneos = () => {
     const usuario = getUser();
 
     useEffect(() => {
-        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     }, []);
 
     const inscribirse = async (torneo) => {
@@ -173,7 +174,7 @@ const VistaTorneos = () => {
                 {torneos.map(t => (
                     <div key={t.Id_Torneo} className="bg-white rounded-2xl border border-[#E8E4E1] px-6 py-4 flex items-center gap-5">
                         <div className="w-10 h-10 rounded-xl bg-[#F4F1EE] flex items-center justify-center shrink-0">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" /></svg>
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-[#5F2119] truncate">{t.Nombre}</p>
@@ -195,43 +196,84 @@ const VistaTorneos = () => {
 };
 
 const VistaEquipo = () => {
+    const [miEquipo, setMiEquipo] = useState(null);
     const [miembros, setMiembros] = useState([]);
+    const [loading, setLoading] = useState(true);
     const usuario = getUser();
 
     useEffect(() => {
-        if (!usuario?.id) return;
-        fetch(`${API}/equipo-jugadores/equipo/${usuario.id}`, { headers: getHeaders() })
-            .then(r => r.json()).then(d => setMiembros(Array.isArray(d) ? d : [])).catch(() => {});
+        if (!usuario?.id) { setLoading(false); return; }
+        // Buscar todos los equipos y ver en cuál está el usuario como jugador
+        fetch(`${API}/equipo-jugadores`, { headers: getHeaders() })
+            .then(r => r.json())
+            .then(async d => {
+                const todos = Array.isArray(d) ? d : [];
+                const miRel = todos.find(ej => (ej.Id_Usuario || ej.id_usuario) === usuario.id);
+                if (!miRel) { setLoading(false); return; }
+                const idEquipo = miRel.Id_Equipo || miRel.id_equipo;
+                // Obtener info del equipo
+                const eqRes = await fetch(`${API}/equipos/${idEquipo}`, { headers: getHeaders() });
+                const eq = await eqRes.json();
+                setMiEquipo(eq);
+                // Obtener miembros vía SP
+                const mRes = await fetch(`${API}/equipo-jugadores/equipo/${idEquipo}`, { headers: getHeaders() });
+                const mData = await mRes.json();
+                setMiembros(Array.isArray(mData) ? mData : mData?.data || []);
+            })
+            .catch(() => { })
+            .finally(() => setLoading(false));
     }, []);
+
+    if (loading) return (
+        <div className="flex items-center justify-center h-64">
+            <p className="text-sm text-[#A28C75]">Cargando equipo...</p>
+        </div>
+    );
 
     return (
         <div>
             <div className="mb-8">
                 <h1 className="text-2xl font-bold text-[#5F2119]">Mi equipo</h1>
-                <p className="text-[#A28C75] text-sm mt-1.5">Miembros de tu equipo actual</p>
+                <p className="text-[#A28C75] text-sm mt-1.5">
+                    {miEquipo ? (miEquipo.Nombre || '—') : 'Sin equipo asignado'}
+                </p>
             </div>
-            {miembros.length === 0 ? (
+            {!miEquipo ? (
                 <div className="bg-white rounded-2xl border border-[#E8E4E1] p-16 text-center">
                     <div className="w-14 h-14 bg-[#F4F1EE] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" /></svg>
                     </div>
                     <p className="text-base font-bold text-[#5F2119]">Sin equipo</p>
                     <p className="text-sm text-[#A28C75] mt-1">No perteneces a ningún equipo todavía</p>
                 </div>
             ) : (
-                <div className="space-y-2">
-                    {miembros.map((m, i) => (
-                        <div key={i} className="bg-white rounded-2xl border border-[#E8E4E1] px-6 py-4 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[#7C2220]/10 flex items-center justify-center text-sm font-bold text-[#7C2220] shrink-0">
-                                {iniciales(m.Nombre_Completo || m.Nickname)}
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold text-[#5F2119]">{m.Nombre_Completo || '—'}</p>
-                                <p className="text-xs text-[#A28C75] mt-0.5">{m.Nickname || ''}</p>
-                            </div>
+                <>
+                    {/* Info del equipo */}
+                    <div className="bg-[#5F2119] rounded-2xl p-6 border border-[#7C2220] mb-5 flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-xl bg-[#7C2220] flex items-center justify-center text-base font-black text-[#D7C1A8] shrink-0">
+                            {(miEquipo.Siglas || (miEquipo.Nombre || '?').slice(0, 2)).toUpperCase()}
                         </div>
-                    ))}
-                </div>
+                        <div>
+                            <p className="text-lg font-bold text-[#F4F1EE]">{miEquipo.Nombre}</p>
+                            <p className="text-xs text-[#D7C1A8]/60 mt-0.5">Capitán: {miEquipo.Capitan || miEquipo.capitan || '—'}</p>
+                        </div>
+                    </div>
+                    {/* Miembros */}
+                    <div className="space-y-2">
+                        {miembros.map((m, i) => (
+                            <div key={i} className="bg-white rounded-2xl border border-[#E8E4E1] px-6 py-4 flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-[#7C2220]/10 flex items-center justify-center text-sm font-bold text-[#7C2220] shrink-0">
+                                    {iniciales(m.Nombre_Completo || m.Nickname)}
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-[#5F2119]">{m.Nombre_Completo || '—'}</p>
+                                    <p className="text-xs text-[#A28C75] mt-0.5">@{m.Nickname || ''}</p>
+                                </div>
+                                {m.Es_Capitan === 1 && <Badge estado="Capitán" />}
+                            </div>
+                        ))}
+                    </div>
+                </>
             )}
         </div>
     );
@@ -249,12 +291,12 @@ const VistaNotificaciones = ({ onRefreshCount }) => {
                 const l = Array.isArray(d) ? d : d?.data || [];
                 setNotifs(l);
                 if (onRefreshCount) onRefreshCount(l.filter(n => !n.Leido).length);
-            }).catch(() => {});
+            }).catch(() => { });
     };
     useEffect(() => { cargar(); }, []);
 
     const marcarLeida = async (id) => {
-        await fetch(`${API}/notificaciones/leer/${id}`, { method: 'PATCH', headers: getHeaders() }).catch(() => {});
+        await fetch(`${API}/notificaciones/leer/${id}`, { method: 'PATCH', headers: getHeaders() }).catch(() => { });
         cargar();
     };
     const marcarTodas = async () => {
@@ -284,7 +326,7 @@ const VistaNotificaciones = ({ onRefreshCount }) => {
             {notifs.length === 0 ? (
                 <div className="bg-white rounded-2xl border border-[#E8E4E1] p-16 text-center">
                     <div className="w-14 h-14 bg-[#F4F1EE] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" /></svg>
                     </div>
                     <p className="text-base font-bold text-[#5F2119]">Sin notificaciones</p>
                     <p className="text-sm text-[#A28C75] mt-1">Estás al día</p>
@@ -318,7 +360,7 @@ const VistaNotificaciones = ({ onRefreshCount }) => {
 };
 
 const VistaSolicitudRol = () => {
-    const [rol,    setRol]    = useState('');
+    const [rol, setRol] = useState('');
     const [motivo, setMotivo] = useState('');
     const [status, setStatus] = useState({ msg: '', ok: null });
     const usuario = getUser();
@@ -378,7 +420,7 @@ const VistaSolicitudRol = () => {
 
 const DashboardParticipante = () => {
     const navigate = useNavigate();
-    const [activo,     setActivo]     = useState('dashboard');
+    const [activo, setActivo] = useState('dashboard');
     const [notifCount, setNotifCount] = useState(0);
     const usuario = getUser();
 
@@ -387,18 +429,18 @@ const DashboardParticipante = () => {
             fetch(`${API}/notificaciones/usuario/${usuario.id}`, { headers: getHeaders() })
                 .then(r => r.json())
                 .then(d => { const l = Array.isArray(d) ? d : d?.data || []; setNotifCount(l.filter(n => !n.Leido).length); })
-                .catch(() => {});
+                .catch(() => { });
         }
     }, []);
 
     const onLogout = () => { localStorage.removeItem('token'); localStorage.removeItem('usuario'); navigate('/'); };
 
     const vistas = {
-        dashboard:      <VistaDashboard setActivo={setActivo} notifCount={notifCount} />,
-        torneos:        <VistaTorneos />,
-        misequipos:     <VistaEquipo />,
+        dashboard: <VistaDashboard setActivo={setActivo} notifCount={notifCount} />,
+        torneos: <VistaTorneos />,
+        misequipos: <VistaEquipo />,
         notificaciones: <VistaNotificaciones onRefreshCount={setNotifCount} />,
-        solicitud:      <VistaSolicitudRol />,
+        solicitud: <VistaSolicitudRol />,
     };
 
     return (

@@ -18,8 +18,8 @@ const iniciales = n => n ? n.split(' ').map(w => w[0]).join('').slice(0, 2).toUp
 
 const Sidebar = ({ activo, setActivo, usuario, onLogout }) => {
     const items = [
-        { id: 'dashboard',  label: 'Mis partidos', icon: 'M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z' },
-        { id: 'posiciones', label: 'Posiciones',   icon: 'M18 20V10M12 20V4M6 20v-6' },
+        { id: 'dashboard', label: 'Mis partidos', icon: 'M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z' },
+        { id: 'posiciones', label: 'Posiciones', icon: 'M18 20V10M12 20V4M6 20v-6' },
     ];
     return (
         <aside className="w-56 bg-[#5F2119] flex flex-col min-h-screen shrink-0">
@@ -39,13 +39,13 @@ const Sidebar = ({ activo, setActivo, usuario, onLogout }) => {
                 {items.map(item => (
                     <button key={item.id} onClick={() => setActivo(item.id)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all text-left ${activo === item.id ? 'bg-[#7C2220] text-[#F4F1EE]' : 'text-[#D7C1A8]/60 hover:bg-[#7C2220]/40 hover:text-[#F4F1EE]'}`}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}/></svg>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon} /></svg>
                         {item.label}
                     </button>
                 ))}
             </nav>
             <button onClick={onLogout} className="flex items-center gap-3 mx-3 mb-4 px-4 py-3 rounded-xl text-sm text-[#D7C1A8]/40 hover:bg-[#7C2220]/30 hover:text-[#D7C1A8] transition-all">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
                 Cerrar sesión
             </button>
         </aside>
@@ -53,24 +53,24 @@ const Sidebar = ({ activo, setActivo, usuario, onLogout }) => {
 };
 
 const MatchCard = ({ match, onActualizar }) => {
-    const [p1, setP1]                         = useState('');
-    const [p2, setP2]                         = useState('');
-    const [sets, setSets]                     = useState([]);
-    const [participantes, setParticipantes]   = useState([]);
-    const [guardando, setGuardando]           = useState(false);
+    const [p1, setP1] = useState('');
+    const [p2, setP2] = useState('');
+    const [sets, setSets] = useState([]);
+    const [participantes, setParticipantes] = useState([]);
+    const [guardando, setGuardando] = useState(false);
 
     useEffect(() => {
         fetch(`${API}/match-participantes/match/${match.Id_Match}`, { headers: getHeaders() })
-            .then(r => r.json()).then(d => setParticipantes(Array.isArray(d) ? d : [])).catch(() => {});
+            .then(r => r.json()).then(d => setParticipantes(Array.isArray(d) ? d : [])).catch(() => { });
         fetch(`${API}/match-set/match/${match.Id_Match}`, { headers: getHeaders() })
-            .then(r => r.json()).then(d => setSets(Array.isArray(d) ? d : [])).catch(() => {});
+            .then(r => r.json()).then(d => setSets(Array.isArray(d) ? d : [])).catch(() => { });
     }, [match.Id_Match]);
 
     const lado1 = participantes.find(p => p.Lado === 1);
     const lado2 = participantes.find(p => p.Lado === 2);
 
     const cambiarEstado = async (estado) => {
-        await fetch(`${API}/matches/${match.Id_Match}`, { method: 'PATCH', headers: getHeaders(), body: JSON.stringify({ Estado: estado }) }).catch(() => {});
+        await fetch(`${API}/matches/${match.Id_Match}`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify({ Estado: estado }) }).catch(() => { });
         onActualizar();
     };
 
@@ -94,7 +94,7 @@ const MatchCard = ({ match, onActualizar }) => {
                     await fetch(`${API}/match-set`, {
                         method: 'POST', headers: getHeaders(),
                         body: JSON.stringify({ Id_Match: match.Id_Match, Numero_Set: i + 1, Mapa_Modo: s.Mapa_Modo || `Set ${i + 1}`, Puntaje_Lado1: s.Puntaje_Lado1 || 0, Puntaje_Lado2: s.Puntaje_Lado2 || 0, Id_Ganador_Set: (s.Puntaje_Lado1 || 0) > (s.Puntaje_Lado2 || 0) ? (lado1?.Id_Participante || null) : (lado2?.Id_Participante || null) }),
-                    }).catch(() => {});
+                    }).catch(() => { });
                 }
             }
             onActualizar();
@@ -103,7 +103,7 @@ const MatchCard = ({ match, onActualizar }) => {
     };
 
     const agregarSet = () => setSets(prev => [...prev, { _nuevo: true, Numero_Set: prev.length + 1, Mapa_Modo: '', Puntaje_Lado1: 0, Puntaje_Lado2: 0 }]);
-    const updateSet  = (i, campo, val) => setSets(prev => prev.map((s, idx) => idx === i ? { ...s, [campo]: val } : s));
+    const updateSet = (i, campo, val) => setSets(prev => prev.map((s, idx) => idx === i ? { ...s, [campo]: val } : s));
 
     return (
         <div className="bg-white rounded-2xl border border-[#E8E4E1] overflow-hidden mb-4">
@@ -192,11 +192,11 @@ const VistaPartidos = () => {
     const [matches, setMatches] = useState([]);
     const cargar = () => {
         fetch(`${API}/matches`, { headers: getHeaders() }).then(r => r.json())
-            .then(d => setMatches(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+            .then(d => setMatches(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     };
     useEffect(() => { cargar(); }, []);
 
-    const activos     = matches.filter(m => m.Estado === 'En Juego' || m.Estado === 'Programado');
+    const activos = matches.filter(m => m.Estado === 'En Juego' || m.Estado === 'Programado');
     const finalizados = matches.filter(m => m.Estado === 'Finalizado');
 
     return (
@@ -208,8 +208,8 @@ const VistaPartidos = () => {
 
             <div className="grid grid-cols-3 gap-4 mb-8">
                 {[['Programados', matches.filter(m => m.Estado === 'Programado').length, false],
-                  ['En juego',    matches.filter(m => m.Estado === 'En Juego').length,    true],
-                  ['Finalizados', finalizados.length,                                       false]
+                ['En juego', matches.filter(m => m.Estado === 'En Juego').length, true],
+                ['Finalizados', finalizados.length, false]
                 ].map(([label, value, accent]) => (
                     <div key={label} className={`rounded-2xl p-6 border ${accent ? 'bg-[#5F2119] border-[#7C2220]' : 'bg-white border-[#E8E4E1]'}`}>
                         <p className={`text-[11px] uppercase tracking-widest font-semibold mb-3 ${accent ? 'text-[#D7C1A8]/60' : 'text-[#A28C75]'}`}>{label}</p>
@@ -221,7 +221,7 @@ const VistaPartidos = () => {
             {activos.length === 0 ? (
                 <div className="bg-white rounded-2xl border border-[#E8E4E1] p-16 text-center mb-5">
                     <div className="w-14 h-14 bg-[#F4F1EE] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="1.5"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="1.5"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" /></svg>
                     </div>
                     <p className="text-base font-bold text-[#5F2119]">Sin partidos activos</p>
                     <p className="text-sm text-[#A28C75] mt-1">Los partidos asignados a ti aparecerán aquí</p>
@@ -259,16 +259,16 @@ const VistaPartidos = () => {
 };
 
 const VistaPosiciones = () => {
-    const [torneos, setTorneos]       = useState([]);
-    const [selTorneo, setSelTorneo]   = useState('');
+    const [torneos, setTorneos] = useState([]);
+    const [selTorneo, setSelTorneo] = useState('');
     const [posiciones, setPosiciones] = useState([]);
 
     useEffect(() => {
-        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     }, []);
     useEffect(() => {
         if (!selTorneo) return;
-        fetch(`${API}/posiciones/torneo/${selTorneo}`, { headers: getHeaders() }).then(r => r.json()).then(d => setPosiciones(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/posiciones/torneo/${selTorneo}`, { headers: getHeaders() }).then(r => r.json()).then(d => setPosiciones(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     }, [selTorneo]);
 
     const medals = ['🥇', '🥈', '🥉'];
@@ -314,10 +314,10 @@ const VistaPosiciones = () => {
 };
 
 const DashboardArbitro = () => {
-    const navigate  = useNavigate();
+    const navigate = useNavigate();
     const [activo, setActivo] = useState('dashboard');
-    const usuario   = getUser();
-    const onLogout  = () => { localStorage.removeItem('token'); localStorage.removeItem('usuario'); navigate('/'); };
+    const usuario = getUser();
+    const onLogout = () => { localStorage.removeItem('token'); localStorage.removeItem('usuario'); navigate('/'); };
     return (
         <div className="flex min-h-screen bg-[#F4F1EE]">
             <Sidebar activo={activo} setActivo={setActivo} usuario={usuario} onLogout={onLogout} />

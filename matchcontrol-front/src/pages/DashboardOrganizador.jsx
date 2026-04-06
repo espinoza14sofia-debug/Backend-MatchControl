@@ -11,16 +11,16 @@ const getHeaders = () => ({
 
 const Badge = ({ estado }) => {
     const map = {
-        'Borrador':      'bg-[#E8E4E1] text-[#5F2119]',
+        'Borrador': 'bg-[#E8E4E1] text-[#5F2119]',
         'Inscripciones': 'bg-[#D7C1A8]/40 text-[#7C2220]',
-        'En Curso':      'bg-[#7C2220] text-[#F4F1EE]',
-        'Finalizado':    'bg-[#E8E4E1] text-[#A28C75]',
-        'Cancelado':     'bg-[#5F2119]/10 text-[#5F2119]',
-        'Pendiente':     'bg-[#D7C1A8]/50 text-[#7C2220]',
-        'Aceptado':      'bg-[#7C2220]/10 text-[#7C2220]',
-        'Rechazado':     'bg-[#5F2119]/10 text-[#5F2119]',
-        'Individual':    'bg-[#D7C1A8]/40 text-[#7C2220]',
-        'Equipo':        'bg-[#E8E4E1] text-[#5F2119]',
+        'En Curso': 'bg-[#7C2220] text-[#F4F1EE]',
+        'Finalizado': 'bg-[#E8E4E1] text-[#A28C75]',
+        'Cancelado': 'bg-[#5F2119]/10 text-[#5F2119]',
+        'Pendiente': 'bg-[#D7C1A8]/50 text-[#7C2220]',
+        'Aceptado': 'bg-[#7C2220]/10 text-[#7C2220]',
+        'Rechazado': 'bg-[#5F2119]/10 text-[#5F2119]',
+        'Individual': 'bg-[#D7C1A8]/40 text-[#7C2220]',
+        'Equipo': 'bg-[#E8E4E1] text-[#5F2119]',
     };
     return (
         <span className={`inline-block text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ${map[estado] || 'bg-[#E8E4E1] text-[#A28C75]'}`}>
@@ -33,10 +33,10 @@ const iniciales = n => n ? n.split(' ').map(w => w[0]).join('').slice(0, 2).toUp
 
 const Sidebar = ({ activo, setActivo, usuario, onLogout }) => {
     const items = [
-        { id: 'dashboard',     label: 'Dashboard',       icon: 'M3 3h7v7H3zM13 3h7v7h-7zM3 13h7v7H3zM13 13h7v7h-7z' },
-        { id: 'torneos',       label: 'Mis torneos',     icon: 'M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z' },
-        { id: 'inscripciones', label: 'Inscripciones',   icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' },
-        { id: 'posiciones',    label: 'Posiciones',      icon: 'M18 20V10M12 20V4M6 20v-6' },
+        { id: 'dashboard', label: 'Dashboard', icon: 'M3 3h7v7H3zM13 3h7v7h-7zM3 13h7v7H3zM13 13h7v7h-7z' },
+        { id: 'torneos', label: 'Mis torneos', icon: 'M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z' },
+        { id: 'inscripciones', label: 'Inscripciones', icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' },
+        { id: 'posiciones', label: 'Posiciones', icon: 'M18 20V10M12 20V4M6 20v-6' },
     ];
     return (
         <aside className="w-56 bg-[#5F2119] flex flex-col min-h-screen shrink-0">
@@ -56,13 +56,13 @@ const Sidebar = ({ activo, setActivo, usuario, onLogout }) => {
                 {items.map(item => (
                     <button key={item.id} onClick={() => setActivo(item.id)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all text-left ${activo === item.id ? 'bg-[#7C2220] text-[#F4F1EE]' : 'text-[#D7C1A8]/60 hover:bg-[#7C2220]/40 hover:text-[#F4F1EE]'}`}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}/></svg>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon} /></svg>
                         {item.label}
                     </button>
                 ))}
             </nav>
             <button onClick={onLogout} className="flex items-center gap-3 mx-3 mb-4 px-4 py-3 rounded-xl text-sm text-[#D7C1A8]/40 hover:bg-[#7C2220]/30 hover:text-[#D7C1A8] transition-all">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
                 Cerrar sesión
             </button>
         </aside>
@@ -70,15 +70,15 @@ const Sidebar = ({ activo, setActivo, usuario, onLogout }) => {
 };
 
 const VistaDashboard = ({ setActivo }) => {
-    const [torneos,     setTorneos]     = useState([]);
+    const [torneos, setTorneos] = useState([]);
     const [disciplinas, setDisciplinas] = useState([]);
-    const [pendientes,  setPendientes]  = useState([]);
+    const [pendientes, setPendientes] = useState([]);
 
     useEffect(() => {
-        fetch(`${API}/torneo`,        { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(    Array.isArray(d) ? d : d?.data || [])).catch(() => {});
-        fetch(`${API}/disciplina`,    { headers: getHeaders() }).then(r => r.json()).then(d => setDisciplinas(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
+        fetch(`${API}/disciplina`, { headers: getHeaders() }).then(r => r.json()).then(d => setDisciplinas(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
         fetch(`${API}/participantes`, { headers: getHeaders() }).then(r => r.json())
-            .then(d => { const l = Array.isArray(d) ? d : d?.data || []; setPendientes(l.filter(p => (p.Estado_Inscripcion || p.estado) === 'Pendiente')); }).catch(() => {});
+            .then(d => { const l = Array.isArray(d) ? d : d?.data || []; setPendientes(l.filter(p => (p.Estado_Inscripcion || p.estado) === 'Pendiente')); }).catch(() => { });
     }, []);
 
     return (
@@ -147,26 +147,26 @@ const VistaDashboard = ({ setActivo }) => {
 };
 
 const VistaTorneos = () => {
-    const [torneos,     setTorneos]     = useState([]);
+    const [torneos, setTorneos] = useState([]);
     const [disciplinas, setDisciplinas] = useState([]);
-    const [orgs,        setOrgs]        = useState([]);
-    const [filtro,      setFiltro]      = useState('');
+    const [orgs, setOrgs] = useState([]);
+    const [filtro, setFiltro] = useState('');
     const [mostrarForm, setMostrarForm] = useState(false);
     const [form, setForm] = useState({ Nombre: '', Id_Disciplina: '', Id_Organizacion: '', Formato: 'Eliminacion Directa', Max_Participantes: 16 });
     const usuario = getUser();
 
     const cargar = () => {
-        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     };
     useEffect(() => {
         cargar();
-        fetch(`${API}/disciplina`,   { headers: getHeaders() }).then(r => r.json()).then(d => setDisciplinas(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
-        fetch(`${API}/organizacion`, { headers: getHeaders() }).then(r => r.json()).then(d => setOrgs(        Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/disciplina`, { headers: getHeaders() }).then(r => r.json()).then(d => setDisciplinas(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
+        fetch(`${API}/organizacion`, { headers: getHeaders() }).then(r => r.json()).then(d => setOrgs(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     }, []);
 
     const cambiarEstado = async (id, estado) => {
         if (!estado) return;
-        await fetch(`${API}/torneo/${id}/estado`, { method: 'PATCH', headers: getHeaders(), body: JSON.stringify({ estado }) }).catch(() => {});
+        await fetch(`${API}/torneo/${id}/estado`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify({ estado }) }).catch(() => { });
         cargar();
     };
 
@@ -175,13 +175,13 @@ const VistaTorneos = () => {
         await fetch(`${API}/torneo`, {
             method: 'POST', headers: getHeaders(),
             body: JSON.stringify({ ...form, Id_Creador: usuario?.id || 1, Max_Participantes: parseInt(form.Max_Participantes) }),
-        }).catch(() => {});
+        }).catch(() => { });
         setMostrarForm(false);
         cargar();
     };
 
     const lista = filtro ? torneos.filter(t => t.Estado === filtro) : torneos;
-    const inp   = "w-full bg-[#F4F1EE] p-3.5 rounded-2xl outline-none text-sm text-[#5F2119] placeholder-[#A28C75]";
+    const inp = "w-full bg-[#F4F1EE] p-3.5 rounded-2xl outline-none text-sm text-[#5F2119] placeholder-[#A28C75]";
 
     return (
         <div>
@@ -252,7 +252,7 @@ const VistaTorneos = () => {
                     {lista.map(t => (
                         <div key={t.Id_Torneo} className="px-6 py-4 flex items-center gap-5">
                             <div className="w-10 h-10 rounded-xl bg-[#F4F1EE] flex items-center justify-center shrink-0">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A28C75" strokeWidth="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" /></svg>
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-bold text-[#5F2119] truncate">{t.Nombre}</p>
@@ -277,12 +277,12 @@ const VistaInscripciones = () => {
 
     const cargar = () => {
         fetch(`${API}/participantes`, { headers: getHeaders() }).then(r => r.json())
-            .then(d => setParticipantes(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+            .then(d => setParticipantes(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     };
     useEffect(() => { cargar(); }, []);
 
     const actualizar = async (id, estado) => {
-        await fetch(`${API}/participantes/${id}`, { method: 'PATCH', headers: getHeaders(), body: JSON.stringify({ Estado_Inscripcion: estado }) }).catch(() => {});
+        await fetch(`${API}/participantes/${id}`, { method: 'PATCH', headers: getHeaders(), body: JSON.stringify({ Estado_Inscripcion: estado }) }).catch(() => { });
         cargar();
     };
 
@@ -329,17 +329,17 @@ const VistaInscripciones = () => {
 };
 
 const VistaPosiciones = () => {
-    const [torneos,    setTorneos]    = useState([]);
-    const [selTorneo,  setSelTorneo]  = useState('');
+    const [torneos, setTorneos] = useState([]);
+    const [selTorneo, setSelTorneo] = useState('');
     const [posiciones, setPosiciones] = useState([]);
 
     useEffect(() => {
-        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+        fetch(`${API}/torneo`, { headers: getHeaders() }).then(r => r.json()).then(d => setTorneos(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     }, []);
     useEffect(() => {
         if (!selTorneo) return;
         fetch(`${API}/posiciones/torneo/${selTorneo}`, { headers: getHeaders() }).then(r => r.json())
-            .then(d => setPosiciones(Array.isArray(d) ? d : d?.data || [])).catch(() => {});
+            .then(d => setPosiciones(Array.isArray(d) ? d : d?.data || [])).catch(() => { });
     }, [selTorneo]);
 
     const medals = ['🥇', '🥈', '🥉'];
