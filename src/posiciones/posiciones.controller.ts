@@ -1,37 +1,38 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { PosicionesService } from './posiciones.service';
 
 @Controller('posiciones')
 export class PosicionesController {
 
-
     constructor(private readonly service: PosicionesService) { }
 
 
-    @Get()
-    async findAll() {
-        return await this.service.verTodas();
+    @Get('torneo/:id')
+    getPosiciones(@Param('id', ParseIntPipe) id: number) {
+        return this.service.obtenerPosicionesPorTorneo(id);
     }
 
-    @Get('torneo/:id')
-    async getPosiciones(@Param('id', ParseIntPipe) id: number) {
-        return await this.service.obtenerPosicionesPorTorneo(id);
+
+    @Get('consultar/:id')
+    consultarPosiciones(@Param('id', ParseIntPipe) id: number) {
+        return this.service.consultarPorTorneo(id);
     }
 
 
     @Post()
-    async create(@Body() data: any) {
-        return await this.service.crear(data);
+    crear(@Body() data: any) {
+        return this.service.crear(data);
     }
 
-    @Patch(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
-        return await this.service.actualizar(id, data);
+
+    @Put(':id')
+    actualizar(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
+        return this.service.actualizar(id, data);
     }
 
 
     @Delete(':id')
-    async remove(@Param('id', ParseIntPipe) id: number) {
-        return await this.service.eliminar(id);
+    eliminar(@Param('id', ParseIntPipe) id: number) {
+        return this.service.eliminar(id);
     }
 }

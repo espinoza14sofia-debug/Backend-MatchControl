@@ -6,79 +6,56 @@ import { DataSource } from 'typeorm';
 export class MatchService {
     constructor(@InjectDataSource() private readonly dataSource: DataSource) { }
 
+
     async crear(dto: any) {
         return await this.dataSource.query(
-            'EXEC sp_InsertarMatch @IdFase=@0, @IdGrupo=@1, @IdArbitro=@2, @FechaHora=@3, @Ubicacion=@4',
-            [
-                dto.Id_Fase,
-                dto.Id_Grupo ?? null,
-                dto.Id_Arbitro ?? null,
-                dto.Fecha_Hora ?? null,
-                dto.Ubicacion ?? 'Por definir'
-            ]
+            'EXEC sp_InsertarMatch @IdFase=@0, @Ubicacion=@1',
+            [dto.Id_Fase, dto.Ubicacion ?? 'Por definir']
         );
-    }
-
-    // ESTE ES EL MÉTODO QUE TE PIDE EL CONTROLLER PARA QUITAR EL ERROR
-    async actualizar(id: number, dto: any) {
-        // Primero verificamos que exista
-        await this.findOne(id);
-
-        // Usamos la lógica de actualización de metadatos (o puedes llamar a un SP si prefieres)
-        const sql = `
-            UPDATE [Match] 
-            SET Id_Arbitro = ISNULL(@1, Id_Arbitro),
-                Fecha_Hora = ISNULL(@2, Fecha_Hora),
-                Ubicacion = ISNULL(@3, Ubicacion),
-                Estado = ISNULL(@4, Estado)
-            WHERE Id_Match = @0
-        `;
-        return await this.dataSource.query(sql, [
-            id,
-            dto.Id_Arbitro ?? null,
-            dto.Fecha_Hora ?? null,
-            dto.Ubicacion ?? null,
-            dto.Estado ?? null
-        ]);
     }
 
     async findAll() {
-        return await this.dataSource.query(`
-            SELECT m.*, f.Nombre as Nombre_Fase, g.Nombre as Nombre_Grupo 
-            FROM [Match] m
-            LEFT JOIN Fase f ON m.Id_Fase = f.Id_Fase
-            LEFT JOIN Grupo g ON m.Id_Grupo = g.Id_Grupo
-            ORDER BY m.Fecha_Hora DESC
-        `);
+        const result = await this.dataSource.query('EXEC sp_ObtenerMatch');
+        return { success: true, data: result };
     }
 
     async findOne(id: number) {
-        const res = await this.dataSource.query(
-            'SELECT * FROM [Match] WHERE Id_Match = @0',
-            [id]
+        const result = await this.dataSource.query(
+            'EXEC sp_ObtenerMatch @IdMatch=@0', [id]
         );
-        if (!res[0]) throw new NotFoundException(`Match ${id} no encontrado`);
-        return res[0];
+        if (!result || result.length === 0)
+            throw new NotFoundException(`Match ${id} no encontrado`);
+        return { success: true, data: result[0] };
     }
+
 
     async findByFase(idFase: number) {
+        const result = await this.dataSource.query(
+            'EXEC sp_ObtenerMatch @IdFase=@0', [idFase]
+        );
+        return { success: true, data: result };
+    }
+
+
+    async actualizar(id: number, dto: any) {
+        await this.dataSource.query(
+            'EXEC sp_ActualizarMatch @IdMatch=@0, @IdArbitro=@1, @FechaHora=@2, @Ubicacion=@3, @Estado=@4',
+            [id, dto.Id_Arbitro ?? null, dto.Fecha_Hora ?? null, dto.Ubicacion ?? null, dto.Estado ?? null]
+        );
+        return { success: true, message: `Match ${id} actualizado` };
+    }
+
+
+    async registrarResultado(id: number, dto: any) {
         return await this.dataSource.query(
-            'SELECT * FROM [Match] WHERE Id_Fase = @0 ORDER BY Fecha_Hora ASC',
-            [idFase]
+            'EXEC sp_RegistrarResultadoMatch @IdMatch=@0, @IdP1=@1, @Score1=@2, @IdP2=@3, @Score2=@4',
+            [id, dto.IdP1, dto.Score1, dto.IdP2, dto.Score2]
         );
     }
 
-    async actualizarResultado(id: number, dto: any) {
-        return await this.dataSource.query(
-            'EXEC sp_ActualizarResultadoMatch @IdMatch=@0, @Estado=@1, @IdGanador=@2',
-            [id, dto.Estado, dto.Id_Ganador ?? null]
-        );
-    }
 
     async eliminar(id: number) {
-        return await this.dataSource.query(
-            'EXEC sp_EliminarMatch @IdMatch=@0',
-            [id]
-        );
+        await this.dataSource.query('EXEC sp_EliminarMatch @IdMatch=@0', [id]);
+        return { success: true, message: `Match ${id} eliminado` };
     }
 }

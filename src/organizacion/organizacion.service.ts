@@ -1,45 +1,49 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
-import { Organizacion } from './entities/organizacion.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class OrganizacionService {
 
-  constructor(
-    @InjectRepository(Organizacion)
-    private readonly orgRepo: Repository<Organizacion>,
-    private readonly dataSource: DataSource,
-  ) { }
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) { }
+
 
   async create(dto: any) {
     return await this.dataSource.query(
       'EXEC sp_InsertarOrganizacion @Nombre=@0, @Email=@1, @Telefono=@2',
-      [dto.nombre, dto.email, dto.telefono]
+      [dto.nombre, dto.email ?? null, dto.telefono ?? null]
     );
   }
+
 
   async findAll() {
-    return await this.orgRepo.find({ where: { estado: true } });
+    const result = await this.dataSource.query('EXEC sp_ObtenerOrganizacion');
+    return { success: true, data: result };
   }
+
 
   async findOne(id: number) {
-    const org = await this.orgRepo.findOneBy({ id_organizacion: id } as any);
-    if (!org) throw new NotFoundException(`Organización con ID ${id} no encontrada`);
-    return org;
+    const result = await this.dataSource.query(
+      'EXEC sp_ObtenerOrganizacion @IdOrganizacion=@0', [id]
+    );
+    if (!result || result.length === 0)
+      throw new NotFoundException(`Organización con ID ${id} no encontrada`);
+    return { success: true, data: result[0] };
   }
 
+
   async update(id: number, dto: any) {
-    return await this.dataSource.query(
+    await this.dataSource.query(
       'EXEC sp_ActualizarOrganizacion @IdOrganizacion=@0, @Nombre=@1, @Email=@2, @Telefono=@3',
-      [id, dto.nombre, dto.email, dto.telefono]
+      [id, dto.nombre, dto.email ?? null, dto.telefono ?? null]
     );
+    return { success: true, message: `Organización ${id} actualizada` };
   }
 
   async remove(id: number) {
-    return await this.dataSource.query(
-      'EXEC sp_EliminarOrganizacion @IdOrganizacion = @0',
-      [id]
+    await this.dataSource.query(
+      'EXEC sp_EliminarOrganizacion @IdOrganizacion=@0', [id]
     );
+    return { success: true, message: `Organización ${id} desactivada` };
   }
 }

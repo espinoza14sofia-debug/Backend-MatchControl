@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
@@ -38,6 +38,20 @@ export class UsuariosService {
             'EXEC sp_InsertarUsuario @IdRol=@0, @NombreCompleto=@1, @Nickname=@2, @Email=@3, @PasswordHash=@4',
             [datos.idRol, datos.nombreCompleto, datos.nickname, datos.email, datos.passwordHash]
         );
+    }
+
+    async findAll() {
+        const result = await this.dataSource.query('EXEC sp_ObtenerUsuario');
+        return { success: true, data: result };
+    }
+
+    async findOne(id: number) {
+        const result = await this.dataSource.query(
+            'EXEC sp_ObtenerUsuario @IdUsuario=@0', [id]
+        );
+        if (!result || result.length === 0)
+            throw new NotFoundException(`Usuario ${id} no encontrado`);
+        return { success: true, data: result[0] };
     }
 
     async actualizar(id: number, dto: any) {

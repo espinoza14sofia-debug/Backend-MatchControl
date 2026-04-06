@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { SancionService } from './sancion.service';
 import { RolesGuard } from '../auth/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,34 +9,45 @@ export class SancionController {
 
     constructor(private readonly service: SancionService) { }
 
+
     @Get()
-    async findAll() {
-        return await this.service.obtenerTodas();
+    findAll() {
+        return this.service.obtenerTodas();
     }
 
+
     @Get('torneo/:id')
-    async findByTorneo(@Param('id', ParseIntPipe) id: number) {
-        return await this.service.obtenerPorTorneo(id);
+    findByTorneo(@Param('id', ParseIntPipe) id: number) {
+        return this.service.obtenerPorTorneo(id);
     }
+
+
+    @Get(':id')
+    findOne(@Param('id', ParseIntPipe) id: number) {
+        return this.service.obtenerUna(id);
+    }
+
 
     @Post()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('Admin', 'Organizador')
-    async create(@Body() data: any) {
-        return await this.service.crear(data);
+    crear(@Body() data: any) {
+        return this.service.crear(data);
     }
 
-    @Patch(':id')
+
+    @Put(':id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('Admin')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
-        return await this.service.actualizar(id, data);
+    actualizar(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
+        return this.service.actualizar(id, data);
     }
+
 
     @Delete(':id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('Admin')
-    async remove(@Param('id', ParseIntPipe) id: number) {
-        return await this.service.eliminar(id);
+    eliminar(@Param('id', ParseIntPipe) id: number) {
+        return this.service.eliminar(id);
     }
 }

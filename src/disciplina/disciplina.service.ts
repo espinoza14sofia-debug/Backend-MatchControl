@@ -1,48 +1,47 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
-import { Disciplina } from './entities/disciplina.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class DisciplinaService {
 
     constructor(
-        @InjectRepository(Disciplina)
-        private readonly repo: Repository<Disciplina>,
-        private readonly dataSource: DataSource,
+        @InjectDataSource() private readonly dataSource: DataSource,
     ) { }
 
     async crear(dto: any) {
         return await this.dataSource.query(
-            'EXEC sp_InsertarDisciplina @IdCategoria=@0, @Nombre=@1, @TipoParticipacion=@2, @Min=@3, @Max=@4',
+            'EXEC sp_InsertarDisciplina @IdCategoria=@0, @Nombre=@1, @Tipo=@2, @Min=@3, @Max=@4',
             [dto.Id_Categoria, dto.Nombre, dto.Tipo_Participacion, dto.Min_Integrantes, dto.Max_Integrantes]
         );
     }
 
     async findAll() {
-        return await this.repo.find();
+        const result = await this.dataSource.query('EXEC sp_ObtenerDisciplina');
+        return { success: true, data: result };
     }
 
     async findOne(id: number) {
-        const res = await this.dataSource.query(
-            'SELECT * FROM Disciplina WHERE Id_Disciplina = @0',
-            [id]
+        const result = await this.dataSource.query(
+            'EXEC sp_ObtenerDisciplina @IdDisciplina=@0', [id]
         );
-        if (!res[0]) throw new NotFoundException(`Disciplina ${id} no encontrada`);
-        return res[0];
+        if (!result || result.length === 0)
+            throw new NotFoundException(`Disciplina ${id} no encontrada`);
+        return { success: true, data: result[0] };
     }
 
     async actualizar(id: number, dto: any) {
-        return await this.dataSource.query(
+        await this.dataSource.query(
             'EXEC sp_ActualizarDisciplina @IdDisciplina=@0, @Nombre=@1, @Min=@2, @Max=@3',
             [id, dto.Nombre, dto.Min_Integrantes, dto.Max_Integrantes]
         );
+        return { success: true, message: `Disciplina ${id} actualizada` };
     }
 
     async remove(id: number) {
-        return await this.dataSource.query(
-            'EXEC sp_EliminarDisciplina @IdDisciplina=@0',
-            [id]
+        await this.dataSource.query(
+            'EXEC sp_EliminarDisciplina @IdDisciplina=@0', [id]
         );
+        return { success: true, message: `Disciplina ${id} eliminada` };
     }
 }

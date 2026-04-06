@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { EquipoJugadorService } from './equipo_jugador.service';
 import { RolesGuard } from '../auth/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -8,31 +8,35 @@ export class EquipoJugadorController {
 
   constructor(private readonly equipoJugadorService: EquipoJugadorService) { }
 
+
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   agregar(@Body() dto: any) {
     return this.equipoJugadorService.agregarJugador(dto);
   }
 
+
   @Get()
   findAll() {
     return this.equipoJugadorService.findAll();
   }
+
 
   @Get('equipo/:id')
   obtenerMiembros(@Param('id') id: string) {
     return this.equipoJugadorService.obtenerMiembros(+id);
   }
 
-  @Patch(':idEq/:idUs')
+
+  @Put('capitan/:idEquipo')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  actualizar(
-    @Param('idEq') idEq: string,
-    @Param('idUs') idUs: string,
-    @Body('nuevoIdEquipo') nuevoId: number
+  actualizarCapitan(
+    @Param('idEquipo') idEquipo: string,
+    @Body('idNuevoCapitan') idNuevoCapitan: number
   ) {
-    return this.equipoJugadorService.actualizar(+idEq, +idUs, nuevoId);
+    return this.equipoJugadorService.actualizarCapitan(+idEquipo, idNuevoCapitan);
   }
+
 
   @Delete(':idEq/:idUs')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
