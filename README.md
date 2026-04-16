@@ -37,7 +37,6 @@ Desarrollado como proyecto final del curso **Base de Datos II** en la Universida
 | Framework | Express.js |
 | Base de datos | Microsoft SQL Server |
 | Autenticación | JWT (JSON Web Tokens) |
-| BI / Reportes | Power BI |
 | Control de versiones | Git / GitHub |
 
 ---
@@ -45,22 +44,18 @@ Desarrollado como proyecto final del curso **Base de Datos II** en la Universida
 ## Arquitectura
 
 ```
-Cliente (Browser)
+Frontend — React + Vite
+  (github.com/espinoza14sofia-debug/Frontend-matchcontrol)
       |
-      | HTTP / REST
+      | HTTP / REST (http://localhost:3000)
       v
-API REST — Node.js + Express.js
+API REST — Node.js + Express.js  <-- este repositorio
   Autenticación · Validación · Controladores
       |
       | SQL / Stored Procedures
       v
 Base de Datos — SQL Server
   Tablas · Triggers · Procedures · Funciones · Índices
-      |
-      | DirectQuery / Import
-      v
-Power BI
-  Dashboards · KPIs · Reportes
 ```
 
 ---
@@ -69,7 +64,6 @@ Power BI
 
 - Node.js
 - Microsoft SQL Server + SQL Server Management Studio (SSMS)
-- Power BI Desktop (para visualizar el dashboard)
 - Git
 
 ---
@@ -178,13 +172,15 @@ USE MatchControl;
 | `trg_CalcularPuntosAutomatica` | Match_Participante | AFTER UPDATE | Recalcula puntos al actualizar Score_Final |
 | `trg_ActualizarTablaPosiciones` | Match_Participante | AFTER INSERT | Actualiza tabla de posiciones al insertar resultado |
 
-### Dashboard Power BI
+### Conexión con el Frontend
 
-1. Instalar [Power BI Desktop](https://powerbi.microsoft.com/desktop/)
-2. Abrir `Dashboard_Power_BI.pbix`
-3. Ir a **Inicio → Transformar datos → Configuración de origen de datos**
-4. Actualizar servidor y credenciales de SQL Server
-5. Hacer clic en **Actualizar**
+Este backend es consumido por el frontend React/Vite disponible en:
+
+```
+https://github.com/espinoza14sofia-debug/Frontend-matchcontrol
+```
+
+Asegurarse de que el backend esté corriendo en `http://localhost:3000` antes de levantar el frontend.
 
 ---
 
@@ -198,7 +194,6 @@ Backend-MatchControl/
 │   ├── middlewares/
 │   └── config/
 ├── Scripts_SQL_organizados_-_Completo.sql
-├── Dashboard_Power_BI.pbix
 ├── .env.example
 ├── package.json
 └── README.md
