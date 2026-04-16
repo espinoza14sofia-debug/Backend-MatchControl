@@ -1,7 +1,7 @@
 # MatchControl 
 ### *Controla cada partida, domina el torneo.*
 
-Sistema Web de Gestión de Torneos Multicategoría desarrollado con Node.js, SQL Server y Power BI.
+Sistema Web de Gestión de Torneos Multicategoría desarrollado con Node.js, SQL Server y Vscode
 
 ---
 
