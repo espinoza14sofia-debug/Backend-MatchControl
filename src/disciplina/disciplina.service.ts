@@ -12,7 +12,7 @@ export class DisciplinaService {
     async crear(dto: any) {
         return await this.dataSource.query(
             'EXEC sp_InsertarDisciplina @IdCategoria=@0, @Nombre=@1, @Tipo=@2, @Min=@3, @Max=@4',
-            [dto.Id_Categoria, dto.Nombre, dto.Tipo_Participacion, dto.Min_Integrantes, dto.Max_Integrantes]
+            [dto.id_categoria, dto.nombre, dto.tipo_participacion, dto.min_integrantes, dto.max_integrantes]
         );
     }
 
@@ -33,15 +33,19 @@ export class DisciplinaService {
     async actualizar(id: number, dto: any) {
         await this.dataSource.query(
             'EXEC sp_ActualizarDisciplina @IdDisciplina=@0, @Nombre=@1, @Min=@2, @Max=@3',
-            [id, dto.Nombre, dto.Min_Integrantes, dto.Max_Integrantes]
+            [id, dto.nombre, dto.min_integrantes, dto.max_integrantes]
         );
         return { success: true, message: `Disciplina ${id} actualizada` };
     }
 
     async remove(id: number) {
-        await this.dataSource.query(
-            'EXEC sp_EliminarDisciplina @IdDisciplina=@0', [id]
-        );
-        return { success: true, message: `Disciplina ${id} eliminada` };
+        try {
+            await this.dataSource.query(
+                'EXEC sp_EliminarDisciplina @IdDisciplina=@0', [id]
+            );
+            return { success: true, message: `Disciplina ${id} eliminada` };
+        } catch (error: any) {
+            throw new NotFoundException(error.message || 'No se puede eliminar');
+        }
     }
 }

@@ -20,7 +20,7 @@ import { PosicionesModule } from './posiciones/posiciones.module';
 import { AuditoriaModule } from './auditoria/auditoria.module';
 import { SancionModule } from './sancion/sancion.module';
 import { NotificacionModule } from './notificacion/notificacion.module';
-import { SolicitudRolModule } from './solicitud_rol/solicitud_rol.module';
+import { SolicitudModule } from './solicitud_rol/solicitud_rol.module';
 
 @Module({
   imports: [
@@ -64,7 +64,7 @@ import { SolicitudRolModule } from './solicitud_rol/solicitud_rol.module';
     AuditoriaModule,
     SancionModule,
     NotificacionModule,
-    SolicitudRolModule,
+   SolicitudModule,
   ],
   controllers: [],
   providers: [],

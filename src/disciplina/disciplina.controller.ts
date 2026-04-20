@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Delete, Param, ParseIntPipe } from '@nestjs/common';
 import { DisciplinaService } from './disciplina.service';
 
 @Controller('disciplina')
@@ -16,8 +16,13 @@ export class DisciplinaController {
         return this.disciplinaService.findAll();
     }
 
+    @Put(':id')
+    actualizar(@Param('id', ParseIntPipe) id: number, @Body() dto: any) {
+        return this.disciplinaService.actualizar(id, dto);
+    }
+
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.disciplinaService.remove(+id);
+    remove(@Param('id', ParseIntPipe) id: number) {
+        return this.disciplinaService.remove(id);
     }
 }

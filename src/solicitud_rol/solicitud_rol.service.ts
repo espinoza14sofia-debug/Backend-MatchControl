@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
@@ -14,28 +14,48 @@ export class SolicitudService {
         try {
             return await this.dataSource.query(
                 'EXEC sp_InsertarSolicitudRol @IdUsuario=@0, @RolSolicitado=@1, @Motivo=@2',
-                [dto.Id_Usuario, dto.Rol_Solicitado, dto.Motivo]
+                [dto.id_usuario, dto.rol_solicitado, dto.motivo || '']
             );
-        } catch (error) {
-            console.error('Error al crear solicitud:', error);
-            throw new Error('Error al insertar la solicitud');
+        } catch (error: any) {
+            throw new BadRequestException('Error al insertar la solicitud');
+        }
+    }
+
+    async obtenerPorUsuario(idUsuario: number) {
+        try {
+            return await this.dataSource.query(
+                `SELECT s.*, r.Nombre as Nombre_Rol, u.Nombre_Completo 
+                 FROM Solicitud_Rol s
+                 JOIN Rol r ON s.Rol_Solicitado = r.Id_Rol
+                 JOIN Usuario u ON s.Id_Usuario = u.Id_Usuario
+                 WHERE s.Id_Usuario = @0 
+                 ORDER BY s.Fecha_Creacion DESC`,
+                [idUsuario]
+            );
+        } catch (error: any) {
+            return [];
         }
     }
 
     async obtenerPendientes() {
         try {
-
             return await this.dataSource.query(
-                `SELECT s.*, u.Nombre_Completo, u.Email, r.Nombre as Nombre_Rol 
+                `SELECT 
+                    s.Id_Solicitud,
+                    s.Id_Usuario,
+                    u.Nombre_Completo,
+                    u.Nombre_Completo as Nombre_Usuario,
+                    s.Motivo,
+                    s.Estado,
+                    s.Fecha_Creacion,
+                    r.Nombre as Nombre_Rol 
                  FROM Solicitud_Rol s
-                 JOIN Usuario u ON s.Id_Usuario = u.Id_Usuario
-                 JOIN Rol r ON s.Rol_Solicitado = r.Id_Rol
+                 INNER JOIN Usuario u ON s.Id_Usuario = u.Id_Usuario
+                 INNER JOIN Rol r ON s.Rol_Solicitado = r.Id_Rol
                  WHERE s.Estado = 'Pendiente'`
             );
-        } catch (error) {
-            console.error('Error en obtenerPendientes (usando fallback):', error.message);
-
-            return await this.dataSource.query("SELECT * FROM Solicitud_Rol WHERE Estado = 'Pendiente'");
+        } catch (error: any) {
+            return [];
         }
     }
 
@@ -43,16 +63,11 @@ export class SolicitudService {
         try {
             await this.dataSource.query(
                 'EXEC sp_ProcesarSolicitudRol @IdSolicitud=@0, @Estado=@1, @IdOrganizacion=@2',
-                [
-                    idSolicitud,
-                    nuevoEstado,
-                    idOrganizacion ?? null
-                ]
+                [idSolicitud, nuevoEstado, idOrganizacion ?? null]
             );
             return { message: `Solicitud ${nuevoEstado} con éxito` };
-        } catch (error) {
-            console.error('Error en procesar solicitud:', error.message);
-            throw new NotFoundException(error.message || 'Error al procesar la solicitud');
+        } catch (error: any) {
+            throw new NotFoundException(error.message);
         }
     }
 }

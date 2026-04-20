@@ -1,31 +1,35 @@
-import { Controller, Get, Post, Patch, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Put, Param, ParseIntPipe } from '@nestjs/common';
 import { SolicitudService } from './solicitud_rol.service';
-import { RolesGuard } from '../auth/roles.guard';
-import { AuthGuard } from '@nestjs/passport';
-import { Roles } from '../auth/roles.decorator';
 
 @Controller('solicitudes')
 export class SolicitudController {
+    constructor(private readonly solicitudService: SolicitudService) {}
 
-    constructor(private readonly service: SolicitudService) { }
-
-    @Post('pedir')
-    @UseGuards(AuthGuard('jwt'))
+    @Post()
     async crear(@Body() dto: any) {
-        return this.service.crear(dto);
+        return await this.solicitudService.crear(dto);
     }
 
+   
     @Get('pendientes')
-    async listarPendientes() {
-        return this.service.obtenerPendientes();
+    async obtenerPendientes() {
+        return await this.solicitudService.obtenerPendientes();
     }
 
-    @Patch('decidir/:idSolicitud')
-    async decidir(
-        @Param('idSolicitud') id: number,
-        @Body('estado') estado: 'Aprobado' | 'Rechazado',
-        @Body('idOrganizacion') idOrganizacion?: number
+    
+    @Get()
+    async listar(@Query('id_usuario') idUsuario?: string) {
+        if (idUsuario) {
+            return await this.solicitudService.obtenerPorUsuario(Number(idUsuario));
+        }
+        return await this.solicitudService.obtenerPendientes();
+    }
+
+    @Put(':id/procesar')
+    async procesar(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() body: { estado: 'Aprobado' | 'Rechazado'; id_organizacion?: number }
     ) {
-        return this.service.procesar(id, estado, idOrganizacion);
+        return await this.solicitudService.procesar(id, body.estado, body.id_organizacion);
     }
 }

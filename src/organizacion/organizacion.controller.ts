@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { OrganizacionService } from './organizacion.service';
 
 @Controller('organizacion')
@@ -16,8 +16,13 @@ export class OrganizacionController {
     return this.organizacionService.findAll();
   }
 
+  @Put(':id')
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: any) {
+    return this.organizacionService.update(id, dto);
+  }
+
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.organizacionService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.organizacionService.remove(id);
   }
 }

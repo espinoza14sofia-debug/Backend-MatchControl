@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
-// DTO — define exactamente qué campos espera el body del login
+// 1. Agregamos las propiedades a la clase
 class LoginDto {
     nickname: string;
     password: string;
@@ -10,13 +10,11 @@ class LoginDto {
 @Controller('auth')
 export class AuthController {
 
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) { }
 
-    // POST /auth/login
-    // Body: { "nickname": "MortisGod", "password": "hash_1" }
     @Post('login')
-    @HttpCode(200)
-    login(@Body() body: LoginDto) {
+    async login(@Body() body: LoginDto) {
+        // Ahora TypeScript ya no marcará error aquí
         return this.authService.login(body.nickname, body.password);
     }
 }
