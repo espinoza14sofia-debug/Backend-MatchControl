@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core';
 @Injectable()
 export class RolesGuard implements CanActivate {
 
-    constructor(private reflector: Reflector) {}
+    constructor(private reflector: Reflector) { }
 
     canActivate(context: ExecutionContext): boolean {
 
@@ -14,10 +14,12 @@ export class RolesGuard implements CanActivate {
             process.env.NODE_ENV === 'development' &&
             request.headers['admin-sofi'] === 'mcsofi'
         ) {
+
             request.user = {
-                id: 19,
+                id: 1,
+                Id_Usuario: 1,
                 nickname: 'SofiAdmin',
-                rol: { id: 1, nombre: 'Admin' }
+                rol: { id: 3, nombre: 'Arbitro' }
             };
             return true;
         }
@@ -31,12 +33,10 @@ export class RolesGuard implements CanActivate {
             throw new UnauthorizedException('Debe iniciar sesión');
         }
 
-        // Admin siempre tiene acceso
         if (user.rol?.id === 1 || user.rol?.nombre === 'Admin') {
             return true;
         }
 
-        // Si la ruta no tiene roles definidos
         if (!requiredRoles) {
             return true;
         }
