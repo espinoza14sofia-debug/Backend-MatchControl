@@ -43,7 +43,11 @@ export class MatchController {
     registrarResultado(@Param('id') id: string, @Body() dto: any) {
         return this.matchService.registrarResultado(+id, dto);
     }
-
+    
+    @Patch(':id/estado')
+cambiarEstado(@Param('id') id: string, @Body('estado') estado: string) {
+    return this.matchService.actualizar(+id, { Estado: estado });
+}
 
     @Delete(':id')
     eliminar(@Param('id') id: string) {

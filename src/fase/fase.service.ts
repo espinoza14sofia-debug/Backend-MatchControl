@@ -9,22 +9,18 @@ export class FaseService {
   async crear(dto: any) {
     const sql = `
       EXEC sp_InsertarFase 
-        @IdTorneo = @0, 
-        @Nombre = @1, 
-        @Orden = @2, 
-        @TipoFase = @3
+        @IdTorneo   = @0, 
+        @NombreFase = @1,
+        @Orden      = @2, 
+        @TipoFase   = @3
     `;
-
-    const values = [
+    return await this.dataSource.query(sql, [
       dto.Id_Torneo,
       dto.Nombre,
       dto.Orden,
       dto.Tipo_Fase
-    ];
-
-    return await this.dataSource.query(sql, values);
+    ]);
   }
-
   async findAll() {
     return await this.dataSource.query('SELECT * FROM Fase ORDER BY Id_Torneo, Orden ASC');
   }

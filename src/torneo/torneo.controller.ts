@@ -10,7 +10,7 @@ export class TorneoController {
 
 
     @Post()
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(RolesGuard)
     crear(@Body() dto: any) {
         return this.torneoService.crear(dto);
     }
@@ -35,7 +35,7 @@ export class TorneoController {
 
 
     @Put(':id/estado')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(RolesGuard)
     cambiarEstado(
         @Param('id', ParseIntPipe) id: number,
         @Body('estado') estado: string
@@ -45,7 +45,7 @@ export class TorneoController {
 
 
     @Delete(':id')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(RolesGuard)
     eliminar(@Param('id', ParseIntPipe) id: number) {
         return this.torneoService.eliminar(id);
     }
